@@ -1,20 +1,35 @@
-# Change the creation date of a file by an offset (macOS)
+# Change the date of a file by an offset (macOS)
 
 ## How to use
 
-With this little bash command you can change the creation date of multiple files. Only tested on macOS.
+With this little bash command you can change the modification or creation date of multiple files. Only tested on macOS.
 
-`./change-creation-datetime 3600 file.txt`
+`change-file-datetime [OPTION] OFFSET FILE...`
 
-The first parameter is the offset that should be applied in seconds. In the top case this would be add 1h. The reduce just use negative numbers (like -1800 for subtract 30min). The second parameter is one or multiple files that the offset should be applied to.
+OPTION are:
+-m offset the modification date (default)
+-c offset the creation date
 
-`./change-creation-datetime -1800 *.txt` remove 30min from all txt files
+OFFSET is the offset that should be applied in seconds. To subtract just use negative numbers.
+
+FILE are one or more files where the date should be changed.
+
+EXAMPLE:
+`./change-file-datetime -m 3600 file.txt`
+In the top case this would add 1h to the modification date.
+
+`./change-file-datetime -c -1800 *.txt`
+Subtract 30min of the creation date from all txt files.
+
+## Known bugs
+
+Time zone is set to +0100. This will cause problems in other time zones and with daylight saving. Sorry.
 
 ## Develop
 
-`ghci change-creation-datetime.hs` to load the program
+`ghci change-file-datetime.hs` to load the program
 
-`> :main 3600 file.txt` to run the main function
+`> :main -m 3600 file.txt` to run the main function
 
 `> :q` to quit
 `> :l` to load a program
@@ -23,4 +38,4 @@ The first parameter is the offset that should be applied in seconds. In the top 
 
 ## Compile
 
-`ghc change-creation-datetime.hs`
+`ghc change-file-datetime.hs`
