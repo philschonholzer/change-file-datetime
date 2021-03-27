@@ -7,8 +7,9 @@ With this little bash command you can change the modification or creation date o
 `change-file-datetime [OPTION] OFFSET FILE...`
 
 OPTION are:
--m offset the modification date (default)
--c offset the creation date
+
+- -m offset the modification date (default)
+- -c offset the creation date
 
 OFFSET is the offset that should be applied in seconds. To subtract just use negative numbers.
 
