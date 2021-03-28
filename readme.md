@@ -22,10 +22,6 @@ In the top case this would add 1h to the modification date.
 `./change-file-datetime -c -1800 *.txt`
 Subtract 30min of the creation date from all txt files.
 
-## Known bugs
-
-Time zone is set to +0100. This will cause problems in other time zones and with daylight saving. Sorry.
-
 ## Develop
 
 `ghci change-file-datetime.hs` to load the program
