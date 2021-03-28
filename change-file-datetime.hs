@@ -11,7 +11,8 @@ main = do
   args <- getArgs
   let (offset, dateType, files) = extractArgs args
   creationdates <- lines <$> readProcess "stat" (buildReadProcessArgs dateType files) ""
-  mapM_ (callCommand . buildUpdateCommand dateType . first (formatDate dateType . addOffsetToDate offset)) $ zip creationdates files
+  commands <- mapM (buildUpdateCommand dateType . first (fmap (formatDate dateType) . addOffsetToDate offset)) $ zip creationdates files
+  mapM_ callCommand commands
   putStrLn $ successMessage dateType
 
 extractArgs :: [String] -> (NominalDiffTime, DateType, [String])
@@ -28,12 +29,9 @@ successMessage :: DateType -> String
 successMessage ModifiedDate = "Changed modification date."
 successMessage CreatedDate = "Changed creation date."
 
-cet :: TimeZone
-cet = hoursToTimeZone 1
-
-addOffsetToDate :: NominalDiffTime -> [Char] -> ZonedTime
+addOffsetToDate :: NominalDiffTime -> [Char] -> IO ZonedTime
 addOffsetToDate offset =
-  utcToZonedTime cet
+  utcToLocalZonedTime
     . addUTCTime offset
     . parseUnixTime
     . removeQuotations
@@ -61,9 +59,15 @@ buildReadProcessArgs :: DateType -> [String] -> [String]
 buildReadProcessArgs CreatedDate files = "-c \"%w\"" : files
 buildReadProcessArgs ModifiedDate files = "-c \"%y\"" : files
 
-buildUpdateCommand :: DateType -> (String, String) -> String
-buildUpdateCommand ModifiedDate = buildUpdateCommandString "touch -m -t"
-buildUpdateCommand CreatedDate = buildUpdateCommandString "SetFile -d "
+buildUpdateCommand :: DateType -> (IO String, String) -> IO String
+buildUpdateCommand ModifiedDate = buildUpdateCommandIOString "touch -m -t"
+buildUpdateCommand CreatedDate = buildUpdateCommandIOString "SetFile -d "
 
-buildUpdateCommandString :: String -> (String, String) -> String
-buildUpdateCommandString command (date, file) = command ++ date ++ " " ++ file
+buildUpdateCommandIOString :: String -> (IO String, String) -> IO String
+buildUpdateCommandIOString command (date, file) = do
+  dateStr <- date
+  putStrLn $ command ++ file ++ dateStr
+  fmap (buildUpdateCommandString command file) date
+
+buildUpdateCommandString :: String -> String -> String -> String
+buildUpdateCommandString command file date = command ++ date ++ " " ++ file
