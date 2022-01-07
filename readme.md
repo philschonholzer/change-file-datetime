@@ -1,5 +1,9 @@
 # Change the date of a file by an offset (macOS)
 
+## Warning
+
+This will break your files! So don't use it on important files.
+
 ## How to use
 
 With this little bash command you can change the modification or creation date of multiple files. Only tested on macOS.
