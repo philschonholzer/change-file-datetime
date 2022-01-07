@@ -22,11 +22,19 @@ In the top case this would add 1h to the modification date.
 `./change-file-datetime -c -1800 *.txt`
 Subtract 30min of the creation date from all txt files.
 
+### Check datetime
+
+To check the datetime of a file or files you can use the bash `stat` command:
+
+`stat test-data/*`
+
+This will show you creation date (Birth), change date, modify date and access date.
+
 ## Develop
 
-`ghci change-file-datetime.hs` to load the program
+`cabal repl` or `ghci app/Main.hs` to load the program
 
-`> :main -m 3600 file.txt` to run the main function
+`> :main -m 3600 test-data/one.txt` to run the main function
 
 `> :q` to quit
 `> :l` to load a program
@@ -35,4 +43,5 @@ Subtract 30min of the creation date from all txt files.
 
 ## Compile
 
-`ghc change-file-datetime.hs`
+1. `nix-build` (! don't run nix-build with the loaded `shell.nix`. This will cause the build to not work...)
+1. Builded executable can be found under `./result/bin/change-creation-time`

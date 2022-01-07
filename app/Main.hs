@@ -1,3 +1,5 @@
+module Main where
+
 import Data.Bifunctor (Bifunctor (first))
 import Data.Function ((&))
 import Data.Time
@@ -8,19 +10,19 @@ data DateType = ModifiedDate | CreatedDate deriving (Show, Read, Eq)
 
 main :: IO ()
 main = do
-  args <- getArgs
-  let (offset, dateType, files) = extractArgs args
+  (offset, dateType, files) <- parseArgs <$> getArgs 
   creationdates <- lines <$> readProcess "stat" (buildReadProcessArgs dateType files) ""
   commands <- mapM (buildUpdateCommand dateType . first (fmap (formatDate dateType) . addOffsetToDate offset)) $ zip creationdates files
   mapM_ callCommand commands
   putStrLn $ successMessage dateType
 
-extractArgs :: [String] -> (NominalDiffTime, DateType, [String])
-extractArgs ("-c" : offset : files) = (toTimeDiff offset, CreatedDate, files)
-extractArgs (offset : "-c" : files) = (toTimeDiff offset, CreatedDate, files)
-extractArgs ("-m" : offset : files) = (toTimeDiff offset, ModifiedDate, files)
-extractArgs (offset : "-m" : files) = (toTimeDiff offset, ModifiedDate, files)
-extractArgs (offset : files) = (toTimeDiff offset, ModifiedDate, files)
+parseArgs :: [String] -> (NominalDiffTime, DateType, [String])
+parseArgs ("-c" : offset : files) = (toTimeDiff offset, CreatedDate, files)
+parseArgs (offset : "-c" : files) = (toTimeDiff offset, CreatedDate, files)
+parseArgs ("-m" : offset : files) = (toTimeDiff offset, ModifiedDate, files)
+parseArgs (offset : "-m" : files) = (toTimeDiff offset, ModifiedDate, files)
+parseArgs (offset : files) = (toTimeDiff offset, ModifiedDate, files)
+parseArgs [] = (toTimeDiff "0", ModifiedDate, [""])
 
 toTimeDiff :: String -> NominalDiffTime
 toTimeDiff = realToFrac . read

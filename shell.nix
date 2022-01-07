@@ -1,7 +1,8 @@
 with import <nixpkgs> {};
-mkShell ({
-    buildInputs = [
-        ghc
-        ghcid
-    ];
-})
+
+mkShell {
+  buildInputs = [
+    cabal-install
+    ghcid
+  ];
+}

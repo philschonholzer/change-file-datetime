@@ -1,0 +1,21 @@
+cabal-version: 2.4
+name:          change-file-datetime
+version:       0.1.0.0
+license:       MIT
+author:        Philip Schönholzer
+homepage:      https://github.com/philschonholzer/change-file-datetime
+synopsis:
+    Bash command to change the modification or creation date of files. Only tested on macOS. Can also break your files! 
+
+source-repository head
+    type:     git
+    location: git@github.com:philschonholzer/change-file-datetime.git
+
+executable change-file-datetime
+    main-is:          Main.hs
+    hs-source-dirs:   app
+    default-language: Haskell2010
+    build-depends:
+        base,
+        time,
+        process
