@@ -5,4 +5,7 @@ mkShell {
     cabal-install
     ghcid
   ];
+  shellHook = ''
+    export IN_NIX_SHELL=""
+  '';
 }

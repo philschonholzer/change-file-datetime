@@ -47,5 +47,5 @@ This will show you creation date (Birth), change date, modify date and access da
 
 ## Compile
 
-1. `nix-build` (! don't run nix-build with the loaded `shell.nix`. This will cause the build to not work...)
+1. `nix-build`
 1. Builded executable can be found under `./result/bin/change-creation-time`
